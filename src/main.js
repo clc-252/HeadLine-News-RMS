@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import App from './App.vue'
 
+// 引入全局样式
+import '@/styles/index.less'
+
 // 引入路由
 import router from './router/index.js'
 
