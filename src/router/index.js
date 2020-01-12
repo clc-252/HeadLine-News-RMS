@@ -8,6 +8,10 @@ import VueRouter from 'vue-router'
 import Login from '@/views/Login.vue'
 // 2.后台首页
 import Index from '@/views/Index.vue'
+// 3.文章列表
+import Postlist from '@/views/Postlist.vue'
+// 4.欢迎页面
+import Welcome from '@/views/Welcome.vue'
 
 // 挂载
 Vue.use(VueRouter)
@@ -25,7 +29,23 @@ let router = new VueRouter({
     {
       name: 'Index',
       path: '/index',
-      component: Index
+      component: Index,
+      // 路由重定向
+      redirect: { name: 'Welcome' },
+      children: [
+        // 文章列表的路由
+        {
+          name: 'Postlist',
+          path: 'postlist',
+          component: Postlist
+        },
+        // 欢迎页面的路由
+        {
+          name: 'Welcome',
+          path: 'welcome',
+          component: Welcome
+        }
+      ]
     }
   ]
 })

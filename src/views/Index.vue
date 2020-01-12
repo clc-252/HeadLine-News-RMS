@@ -7,6 +7,7 @@
         <div class="logo"></div>
         <!-- 左侧导航菜单栏部分 -->
         <el-menu
+          :router="true"
           :unique-opened="true"
           default-active="2"
           class="el-menu-vertical-demo"
@@ -29,7 +30,7 @@
               <i class="el-icon-location"></i>
               <span>文章管理</span>
             </template>
-            <el-menu-item index="2-1">
+            <el-menu-item index="/index/postlist">
               <i class="el-icon-location"></i>
               <span>文章列表</span>
             </el-menu-item>
@@ -59,7 +60,9 @@
             <span>退出</span>
           </div>
         </el-header>
-        <el-main>欢迎你使用黑马头条后台管理系统</el-main>
+        <el-main>
+          <router-view></router-view>
+        </el-main>
       </el-container>
     </el-container>
   </div>
