@@ -1,16 +1,16 @@
 <template>
   <div class="login">
     <div class="container">
-        <img src="../assets/avatar.jpg" class="avatar" alt="">
-      <el-form :model="LoginForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
+      <img src="../assets/avatar.jpg" class="avatar" alt />
+      <el-form :model="LoginForm" :rules="rules" ref="LoginForm" class="demo-ruleForm">
         <el-form-item prop="username">
-          <el-input v-model="LoginForm.username" prefix-icon="icon-user"></el-input>
+          <el-input v-model="LoginForm.username" prefix-icon="icon-user" placeholder="请输入用户名"></el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input v-model="LoginForm.password" prefix-icon="icon-key"></el-input>
+          <el-input v-model="LoginForm.password" prefix-icon="icon-key" placeholder="请输入密码"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class="login-btn" >登陆</el-button>
+          <el-button type="primary" class="login-btn" @click="loginSubmit">登陆</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -18,6 +18,8 @@
 </template>
 
 <script>
+// 引入实现登陆的方法
+import { login } from '@/apis/user.js'
 export default {
   data () {
     return {
@@ -32,9 +34,32 @@ export default {
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 4, max: 16, message: '请输入3~16位的密码', trigger: 'blur' }
+          { min: 3, max: 16, message: '请输入3~16位的密码', trigger: 'blur' }
         ]
       }
+    }
+  },
+  methods: {
+    loginSubmit () {
+      // console.log(res)
+      // 添加数据的二次验证，如果验证成功再发送请求，否则就不要发送请求
+      this.$refs.LoginForm.validate(async vaild => {
+        if (vaild) {
+          let res = await login(this.LoginForm)
+          if (res.data.message === '登录成功') {
+            // 如果用户登录成功，将token值存储起来
+            localStorage.setItem('userLoginToken_back', res.data.data.token)
+            // 跳转到首页
+            this.$router.push({ name: 'Index' })
+          } else {
+            // 给出提示信息
+            this.$message.error(res.data.message)
+          }
+        } else {
+          // 提示用户
+          this.$message.error('数据输入不合法')
+        }
+      })
     }
   }
 }
