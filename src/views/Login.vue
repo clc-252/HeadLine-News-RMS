@@ -24,8 +24,8 @@ export default {
   data () {
     return {
       LoginForm: {
-        username: '',
-        password: ''
+        username: '110110',
+        password: '110'
       },
       // 添加数据的验证规则
       rules: {

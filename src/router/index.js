@@ -30,5 +30,22 @@ let router = new VueRouter({
   ]
 })
 
+// 添加导航守卫
+router.beforeEach((to, from, next) => {
+  // 判断是否进入的是登陆页，如果是，直接进行下一步
+  if (to.path === '/login') {
+    next()
+  } else {
+    // 判断是否有登陆过，有的话next
+    let token = localStorage.getItem('userLoginToken_back')
+    if (token) {
+      next()
+    } else {
+      // 重定向到登录页
+      next('/login')
+    }
+  }
+})
+
 // 暴露路由
 export default router
