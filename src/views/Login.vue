@@ -49,6 +49,8 @@ export default {
           if (res.data.message === '登录成功') {
             // 如果用户登录成功，将token值存储起来
             localStorage.setItem('userLoginToken_back', res.data.data.token)
+            // 将用户数据保存到本地
+            localStorage.setItem('userData_back', JSON.stringify(res.data.data.user))
             // 跳转到首页
             this.$router.push({ name: 'Index' })
           } else {

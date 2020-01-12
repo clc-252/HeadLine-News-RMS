@@ -5,16 +5,60 @@
       <el-aside width="200px">
         <!-- logo部分 -->
         <div class="logo"></div>
+        <!-- 左侧导航菜单栏部分 -->
+        <el-menu
+          :unique-opened="true"
+          default-active="2"
+          class="el-menu-vertical-demo"
+          background-color="#545c64"
+          text-color="#fff"
+          active-text-color="#ffd04b"
+        >
+          <el-submenu index="1">
+            <template slot="title">
+              <i class="el-icon-location"></i>
+              <span>用户管理</span>
+            </template>
+            <el-menu-item index="1-1">
+              <i class="el-icon-location"></i>
+              <span>用户列表</span>
+            </el-menu-item>
+          </el-submenu>
+          <el-submenu index="2">
+            <template slot="title">
+              <i class="el-icon-location"></i>
+              <span>文章管理</span>
+            </template>
+            <el-menu-item index="2-1">
+              <i class="el-icon-location"></i>
+              <span>文章列表</span>
+            </el-menu-item>
+            <el-menu-item index="2-2">
+              <i class="el-icon-location"></i>
+              <span>文章发布</span>
+            </el-menu-item>
+          </el-submenu>
+          <el-submenu index="3">
+            <template slot="title">
+              <i class="el-icon-location"></i>
+              <span>栏目管理</span>
+            </template>
+            <el-menu-item index="3-1">
+              <i class="el-icon-location"></i>
+              <span>栏目列表</span>
+            </el-menu-item>
+          </el-submenu>
+        </el-menu>
       </el-aside>
       <el-container>
         <el-header>
           <span class="el-icon-s-operation toggle-btn"></span>
           <span class="system-title">黑马头条后台管理系统</span>
           <div class="welcome">
-            <span>欢迎你：管理员</span>
+            <span>欢迎你：{{userData.nickname}}</span> &nbsp;&nbsp;&nbsp;
             <span>退出</span>
           </div>
-          </el-header>
+        </el-header>
         <el-main>欢迎你使用黑马头条后台管理系统</el-main>
       </el-container>
     </el-container>
@@ -27,6 +71,10 @@ export default {
     return {
       userData: ''
     }
+  },
+  mounted () {
+    this.userData = JSON.parse(localStorage.getItem('userData_back'))
+    console.log(this.userData)
   }
 }
 </script>
@@ -34,8 +82,8 @@ export default {
 <style lang='less' scoped>
 .index {
   height: 100%;
-  .el-menu{
-      border-right: none;
+  .el-menu {
+    border-right: none;
   }
   .el-menu-admin:not(.el-menu--collapse) {
     width: 200px;
