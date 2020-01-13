@@ -22,7 +22,7 @@
         </el-form-item>
         <!-- 富文本框 -->
         <el-form-item label="内容:">
-          <VueEditor :config="config" v-if="post.type===1" />
+          <VueEditor :config="config" v-if="post.type===1" ref="myEditor" />
           <el-upload class="upload-demo" action v-if="post.type===2">
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传视频文件</div>
@@ -47,7 +47,7 @@
           </el-upload>
         </el-form-item>
         <!-- button按钮 -->
-        <el-button type="primary">主要按钮</el-button>
+        <el-button type="primary" @click="publishPost">主要按钮</el-button>
       </el-form>
     </el-card>
   </div>
@@ -77,9 +77,11 @@ export default {
         uploadImage: {
           url: 'http://localhost:3000/upload',
           name: 'file',
+          // 设置请求头，传递token
+          headers: this.getToken(),
           // res是结果，insert方法会把内容注入到编辑器中，res.data.url是资源地址
           uploadSuccess (res, insert) {
-            insert('http://localhost:3000' + res.data.url)
+            insert('http://localhost:3000' + res.data.data.url)
           }
         },
 
@@ -87,8 +89,11 @@ export default {
         uploadVideo: {
           url: 'http://localhost:3000/upload',
           name: 'file',
+          // 设置请求头，传递token
+          headers: this.getToken(),
           uploadSuccess (res, insert) {
-            insert('http://localhost:3000' + res.data.url)
+            // console.log(res)
+            insert('http://localhost:3000' + res.data.data.url)
           }
         }
       }
@@ -105,6 +110,19 @@ export default {
       // let checkedCount = value.length;
       // this.checkAll = checkedCount === this.cities.length;
       // this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
+    },
+    // 发布文章
+    publishPost () {
+      if (this.post.type === 1) {
+        // 获取富文本框内容
+        this.post.conent = this.$refs.myEditor.editor.root.innerHTML
+      }
+      console.log(this.post)
+    },
+    // 封装一个设置token的方法
+    getToken () {
+      let token = localStorage.getItem('userLoginToken_back')
+      return { Authorization: token }
     }
   },
   // 获取栏目列表数据
