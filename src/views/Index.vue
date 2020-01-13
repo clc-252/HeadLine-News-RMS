@@ -57,7 +57,7 @@
           <span class="system-title">黑马头条后台管理系统</span>
           <div class="welcome">
             <span>欢迎你：{{userData.nickname}}</span> &nbsp;&nbsp;&nbsp;
-            <span>退出</span>
+            <span @click="edit">退出</span>
           </div>
         </el-header>
         <el-main>
@@ -78,6 +78,12 @@ export default {
   mounted () {
     this.userData = JSON.parse(localStorage.getItem('userData_back'))
     // console.log(this.userData)
+  },
+  methods: {
+    edit () {
+      localStorage.removeItem('userLoginToken_back')
+      this.$router.push({ name: 'Login' })
+    }
   }
 }
 </script>

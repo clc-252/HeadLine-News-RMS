@@ -11,7 +11,7 @@
       <!-- form表单 -->
       <el-form ref="post" :model="post" label-width="80px">
         <el-form-item label="标题:">
-          <el-input v-model="post.name"></el-input>
+          <el-input v-model="post.title"></el-input>
         </el-form-item>
         <!-- radio单选框 -->
         <el-form-item label="类型:">
@@ -47,7 +47,7 @@
           </el-upload>
         </el-form-item>
         <!-- button按钮 -->
-        <el-button type="primary" @click="publishPost">主要按钮</el-button>
+        <el-button type="primary" @click="publishPost">发布文章</el-button>
       </el-form>
     </el-card>
   </div>
@@ -59,6 +59,8 @@ import VueEditor from 'vue-word-editor'
 import 'quill/dist/quill.snow.css'
 // 引入实现获取栏目列表数据的方法
 import { getCateList } from '@/apis/cate.js'
+// 引入实现文章发布的方法
+import { publishPost } from '@/apis/article.js'
 export default {
   data () {
     return {
@@ -119,12 +121,22 @@ export default {
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.cateList.length
     },
     // 发布文章
-    publishPost () {
+    async publishPost () {
       if (this.post.type === 1) {
         // 获取富文本框内容
         this.post.content = this.$refs.myEditor.editor.root.innerHTML
       }
-      console.log(this.post)
+      // 处理栏目数据
+      this.post.categories = this.post.categories.map(value => {
+        return { id: value }
+      })
+      // 实现发布文章
+      let res = await publishPost(this.post)
+      console.log(res)
+      if (res.data.message === '文章发布成功') {
+        this.$message.success(res.data.message)
+        this.$router.push({ name: 'Postlist' })
+      }
     },
     // 封装一个设置token的方法
     getToken () {
@@ -163,7 +175,12 @@ export default {
   async mounted () {
     let res = await getCateList()
     // console.log(res)
-    this.cateList = res.data.data.splice(1)
+    let token = localStorage.getItem('userLoginToken_back')
+    if (token) {
+      this.cateList = res.data.data.splice(2)
+    } else {
+      this.cateList = res.data.data.splice(1)
+    }
   },
   // 注册
   components: {
