@@ -102,14 +102,21 @@ export default {
   methods: {
     // 切换全选全不选的状态
     handleCheckAllChange (val) {
-      // this.checkedCities = val ? cityOptions : [];
-      // this.isIndeterminate = false;
+      // console.log(val) //true或者false，val是当前全选框的状态：true为全选、false为全不选
+      // 需要从this.cateList里面获取到所有id，生成一个数组用于全选操作
+      this.post.categories = val ? this.cateList.map(value => {
+        return value.id
+      }) : []
+      // 改变当前的状态：全选或者全不选，这是一个确定的状态
+      this.isIndeterminate = false
     },
     // 单击复选框组中的某个复选框所触发的事件
     handleCheckedCitiesChange (value) {
-      // let checkedCount = value.length;
-      // this.checkAll = checkedCount === this.cities.length;
-      // this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
+      // checkedCount：当前被选择的复选框的数量
+      let checkedCount = value.length
+      this.checkAll = checkedCount === this.cateList.length
+      // 当被选中的数量>0，但是却小于总的复选框的数量，说明有选但没有全选
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.cateList.length
     },
     // 发布文章
     publishPost () {
