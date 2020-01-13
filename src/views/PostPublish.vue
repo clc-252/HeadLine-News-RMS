@@ -23,7 +23,7 @@
         <!-- 富文本框 -->
         <el-form-item label="内容:">
           <VueEditor :config="config" v-if="post.type===1" ref="myEditor" />
-          <el-upload class="upload-demo" action v-if="post.type===2">
+          <el-upload class="upload-demo" action="http://localhost:3000/upload" v-if="post.type===2" :headers="getToken()" :on-success="handlerSuccess">
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传视频文件</div>
           </el-upload>
@@ -42,7 +42,7 @@
         </el-form-item>
         <!-- upload上传 -->
         <el-form-item label="封面:">
-          <el-upload action="https://jsonplaceholder.typicode.com/posts/" list-type="picture-card">
+          <el-upload action="http://localhost:3000/upload" list-type="picture-card" :headers="getToken()" :on-success="handlerPoster" :on-remove="removePoster">
             <i class="el-icon-plus"></i>
           </el-upload>
         </el-form-item>
@@ -115,7 +115,7 @@ export default {
     publishPost () {
       if (this.post.type === 1) {
         // 获取富文本框内容
-        this.post.conent = this.$refs.myEditor.editor.root.innerHTML
+        this.post.content = this.$refs.myEditor.editor.root.innerHTML
       }
       console.log(this.post)
     },
@@ -123,6 +123,33 @@ export default {
     getToken () {
       let token = localStorage.getItem('userLoginToken_back')
       return { Authorization: token }
+    },
+    // 文件上传成功的钩子
+    handlerSuccess (response, file, fileList) {
+      // console.log(response)
+      // console.log(file)
+      // console.log(fileList)
+      if (response.message === '文件上传成功') {
+        this.post.content = 'http://127.0.0.1:3000' + response.data.url
+      }
+    },
+    // 封面文件上传成功的钩子
+    handlerPoster (response) {
+      this.post.cover.push({ id: response.data.id })
+      console.log(this.post.cover)
+    },
+    // 封面文件列表移除文件时的钩子
+    removePoster (file) {
+      console.log(file)
+      // 将封面图片从post.cover中删除
+      let id = file.response.data.id
+      // 遍历post.cover
+      for (let i = 0; i < this.post.cover.length; i++) {
+        if (this.post.cover[i].id === id) {
+          this.post.cover.splice(i, 1)
+          break
+        }
+      }
     }
   },
   // 获取栏目列表数据
