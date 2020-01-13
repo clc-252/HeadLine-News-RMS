@@ -12,6 +12,8 @@ import Index from '@/views/Index.vue'
 import Postlist from '@/views/Postlist.vue'
 // 4.欢迎页面
 import Welcome from '@/views/Welcome.vue'
+// 5.发布文章
+import PostPublish from '@/views/PostPublish.vue'
 
 // 挂载
 Vue.use(VueRouter)
@@ -44,6 +46,12 @@ let router = new VueRouter({
           name: 'Welcome',
           path: 'welcome',
           component: Welcome
+        },
+        // 文章发布的路由
+        {
+          name: 'PostPublish',
+          path: 'postpublish',
+          component: PostPublish
         }
       ]
     }
