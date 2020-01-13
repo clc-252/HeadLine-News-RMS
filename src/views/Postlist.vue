@@ -11,8 +11,8 @@
       <el-table-column type="index" width="50"></el-table-column>
       <el-table-column prop="title" label="标题" width="450"></el-table-column>
       <el-table-column prop="user.create_date" label="日期" width="180">
-          <!-- 使用作用域插槽来使用过滤器 -->
-          <template slot-scope="scope">{{ scope.row.user.create_date | dateFormat }}</template>
+        <!-- 使用自定义模板列来使用过滤器 -->
+        <template slot-scope="scope">{{ scope.row.user.create_date | dateFormat }}</template>
       </el-table-column>
       <el-table-column prop="user.nickname" label="作者"></el-table-column>
       <el-table-column label="操作">
@@ -42,6 +42,16 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- Pagination 分页 -->
+     <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="pageIndex"
+      :page-sizes="[2, 4, 6, 8]"
+      :page-size="2"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total">
+    </el-pagination>
   </div>
 </template>
 
@@ -53,13 +63,41 @@ import { dateFormat } from '@/utils/myfilters.js'
 export default {
   data () {
     return {
-      postList: []
+      postList: [],
+      pageSize: 2,
+      pageIndex: 1,
+      total: 0
+    }
+  },
+  methods: {
+    // 获取文章分页数据的方法
+    async init () {
+      let res = await getPostList({ pageSize: this.pageSize, pageIndex: this.pageIndex })
+      this.postList = res.data.data
+      console.log(this.postList)
+      this.total = res.data.total
+    },
+    // 切换每页显示数量列表时触发
+    handleSizeChange (val) {
+      // val是当前选择的每页的条数
+      console.log(`每页 ${val} 条`)
+      // 重置pageSize
+      this.pageSize = val
+      // 重新发起请求
+      this.init()
+    },
+    // 切换页码时触发
+    handleCurrentChange (val) {
+      // val是当前页面
+      console.log(`当前页: ${val}`)
+      // 重置当前页
+      this.pageIndex = val
+      // 重新发起请求渲染页面数据
+      this.init()
     }
   },
   async mounted () {
-    let res = await getPostList()
-    this.postList = res.data.data
-    console.log(this.postList)
+    this.init()
   },
   //   注册全局过滤器
   filters: {

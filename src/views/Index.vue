@@ -77,7 +77,7 @@ export default {
   },
   mounted () {
     this.userData = JSON.parse(localStorage.getItem('userData_back'))
-    console.log(this.userData)
+    // console.log(this.userData)
   }
 }
 </script>
