@@ -28,30 +28,44 @@
           <el-tooltip class="item" effect="dark" content="分享" placement="top">
             <el-button
               type="success"
-              @click="handleShare(scope.$index, scope.row)"
+              @click="handleShare(scope.row)"
               icon="el-icon-share"
             ></el-button>
           </el-tooltip>
           <el-tooltip class="item" effect="dark" content="删除" placement="top">
-            <el-button
-              type="danger"
-              @click="handleDelete(scope.$index, scope.row)"
-              icon="el-icon-delete"
-            ></el-button>
+            <el-button type="danger" @click="handleDelete(scope.row)" icon="el-icon-delete"></el-button>
           </el-tooltip>
         </template>
       </el-table-column>
     </el-table>
     <!-- Pagination 分页 -->
-     <el-pagination
+    <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="pageIndex"
       :page-sizes="[2, 4, 6, 8]"
       :page-size="2"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="total">
-    </el-pagination>
+      :total="total"
+    ></el-pagination>
+    <!-- dialog对话框 -->
+    <el-dialog title="分享" :visible.sync="shareDialogFormVisible">
+      <el-form :model="shareForm">
+        <el-form-item label="分享给：" :label-width="'100px'">
+          <el-input v-model="shareForm.name" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="留言：" :label-width="'100px'">
+          <el-select v-model="shareForm.region" placeholder="请选择活动区域">
+            <el-option label="区域一" value="shanghai"></el-option>
+            <el-option label="区域二" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="shareDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" >确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -63,6 +77,8 @@ import { dateFormat } from '@/utils/myfilters.js'
 export default {
   data () {
     return {
+      shareDialogFormVisible: false,
+      shareForm: {},
       postList: [],
       pageSize: 2,
       pageIndex: 1,
@@ -72,7 +88,10 @@ export default {
   methods: {
     // 获取文章分页数据的方法
     async init () {
-      let res = await getPostList({ pageSize: this.pageSize, pageIndex: this.pageIndex })
+      let res = await getPostList({
+        pageSize: this.pageSize,
+        pageIndex: this.pageIndex
+      })
       this.postList = res.data.data
       console.log(this.postList)
       this.total = res.data.total
@@ -94,6 +113,30 @@ export default {
       this.pageIndex = val
       // 重新发起请求渲染页面数据
       this.init()
+    },
+    // 删除操作(弹出框的演示，没有实际功能效果)
+    handleDelete (row) {
+      this.$confirm(`此操作将永久删除id为${row.id}的文章, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+    },
+    // 分享操作(Dialog弹出框的使用，没有实际的功能实现)
+    handleShare (row) {
+      this.shareDialogFormVisible = true
     }
   },
   async mounted () {
