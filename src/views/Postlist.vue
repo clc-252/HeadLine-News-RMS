@@ -21,7 +21,7 @@
           <el-tooltip class="item" effect="dark" content="编辑" placement="top">
             <el-button
               type="primary"
-              @click="handleEdit(scope.$index, scope.row)"
+              @click="handleEdit(scope.row)"
               icon="el-icon-edit"
             ></el-button>
           </el-tooltip>
@@ -137,6 +137,11 @@ export default {
     // 分享操作(Dialog弹出框的使用，没有实际的功能实现)
     handleShare (row) {
       this.shareDialogFormVisible = true
+    },
+    // 编辑操作
+    handleEdit (data) {
+      // 实现路由的跳转：跳转到发布文章页面
+      this.$router.push({ path: `postpublish/${data.id}` })
     }
   },
   async mounted () {

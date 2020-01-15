@@ -16,3 +16,20 @@ export const publishPost = (data) => {
     data
   })
 }
+
+// 3.根据id获取文章详情
+export const getArticleById = (id) => {
+  return axios({
+    url: `/post/${id}`
+  })
+}
+
+// 4.根据文章id编辑文章
+// 3.根据id获取文章详情
+export const getEditArticleById = (id, data) => {
+  return axios({
+    method: 'post',
+    url: `/post_update/${id}`,
+    data
+  })
+}

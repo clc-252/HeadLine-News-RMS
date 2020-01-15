@@ -50,7 +50,8 @@ let router = new VueRouter({
         // 文章发布的路由
         {
           name: 'PostPublish',
-          path: 'postpublish',
+          // 添加一个可选参数的路由
+          path: 'postpublish/:id?',
           component: PostPublish
         }
       ]
